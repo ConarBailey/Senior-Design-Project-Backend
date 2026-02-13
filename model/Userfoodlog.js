@@ -5,15 +5,7 @@ const userfoodlogSchema = new Schema({
     username: {
         type: String,
         required: true
-    },
-    creationDate: {
-        type: Date,
-        default: Date.now
     },    
-    calorieGoal: {
-        type: String,
-        default: 2000
-    },        
     logDate: {
         type: Date
     },
@@ -21,19 +13,15 @@ const userfoodlogSchema = new Schema({
         type: String,
         default: "Breakfast"
     },
-    foodName: {
-        type: String,
-        required: true
-    },
-    quantityValue: {
+    foodID: {
         type: Number,
         required: true
     },
-    quantityUnits: {
+    servingID: {
         type: Number,
         required: true
     },
-    calories: {
+    servingQuantity: {
         type: Number,
         required: true
     },
