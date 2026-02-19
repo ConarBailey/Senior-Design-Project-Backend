@@ -11,7 +11,31 @@ const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn');
+const WebSocket = require('ws');
 const PORT = process.env.PORT || 3500;
+const socketServer = new WebSocket.Server({port:8080});
+
+console.log('WebSocket server is running on ws://localhost:8080');
+
+// Connection event handler
+socketServer.on('connection', (ws) => {
+  console.log('New client connected');
+  
+  // Send a welcome message to the client
+  ws.send('Welcome to the WebSocket server!');
+
+  // Message event handler
+  ws.on('message', (message) => {
+    console.log(`Received: ${message}`);
+    // Echo the message back to the client
+    ws.send(`Server received: ${message}`);
+  });
+
+  // Close event handler
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
 
 // Connect to MongoDB
 connectDB();
@@ -65,3 +89,4 @@ mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
+
