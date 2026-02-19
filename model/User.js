@@ -31,24 +31,6 @@ const userSchema = new Schema({
     modComments: {
         type: String,
     },
-    logDate: {
-        type: Date
-    },
-    mealName: {
-        type: String
-    },
-    foodName: {
-        type: String
-    },
-    quantityValue: {
-        type: Number
-    },
-    quantityUnits: {
-        type: Number
-    },
-    calories: {
-        type: Number
-    },
     refreshToken: String
 })
 
