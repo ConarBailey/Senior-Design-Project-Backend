@@ -11,9 +11,14 @@ const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn');
+const getToken = require("./getAccessToken")
+const foodSearch = require("./callFatSecretAPI")
+var accessToken;
 const WebSocket = require('ws');
 const PORT = process.env.PORT || 3500;
 const socketServer = new WebSocket.Server({port:8080});
+socketServer.binaryType = "arraybuffer";
+
 
 console.log('WebSocket server is running on ws://localhost:8080');
 
@@ -25,11 +30,14 @@ socketServer.on('connection', (ws) => {
   ws.send('Welcome to the WebSocket server!');
 
   // Message event handler
-  ws.on('message', (message) => {
-    console.log(`Received: ${message}`);
-    // Echo the message back to the client
-    ws.send(`Server received: ${message}`);
-  });
+    ws.addEventListener('message', event => {
+    console.log('Message to server: ', event.data);
+    if(event.data.slice(0,10)=='Food_name='){
+        foodSearch.callFatSecretAPI(accessToken,event.data.slice(10,event.data.length)).then((value)=>{
+            ws.send("SEARCH_RESULTS:"+JSON.stringify(value));
+        });
+    }
+    });
 
   // Close event handler
   ws.on('close', () => {
@@ -90,3 +98,6 @@ mongoose.connection.once('open', () => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
 
+(async () => {
+     accessToken = await getToken.getAccessToken();
+})();
